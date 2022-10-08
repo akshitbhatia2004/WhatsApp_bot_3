@@ -253,49 +253,38 @@ Module({
 Module({
     pattern: 'movie (.*)',
     fromMe: w,
-    desc: "Movie search"
+    desc: "Movie search",
+    use: 'search'
 }, async (message, match) => {
-    if (match[1] === '') return await message.sendReply('```Give me a movie name 👀.```');
-	var {data} = await axios(`https://pronoob-aio-drive.cf/Sct?search=${msgData.msgText.replaceAll`);
-	if (data.Response != 'True') return await message.sendReply(data.Error);
-	let msg = console.log(url);
-            // Fetch HTML of the page we want to scrape
-            const { data } = await axios.get(url);
-            // Load HTML we fetched in the previous line
-            const $ = cheerio.load(data);
-            const list = $(".m-2 div[title] span a");
-            let prefix = "https://pronoob-aio-drive.cf/";
-            let movieList = `🍿👀📽\n`;
-            if (list.length === 0) {
-                await sock.sendMessage(
-                    chatId, { text: `Movie not found! Give correct name dumbo` }, { quoted: msg }
-                );
-                return;
-            }
-            console.log("Movie list", list.length);
-            list.each((idx, el) => {
-                if (idx % 2 == 0) {
-                    if (!(idx & 1)) {
-                        let temp = $(el).attr("href");
-                        movieList = movieList + prefix + temp + "\n" + "\n🍿👀📽\n\n";
-                    }
-                }
-            });
-            let finalList = `${msgData.msgText} Links \n${movieList}`;
-            console.log(finalList);
-            await sock.sendMessage(chatId, { 
-                text: finalList,
-                linkPreview:true 
-                }, 
-                { quoted: msg }
-            );
-        } catch (err) {
-            console.log(err);
-            await sock.sendMessage(
-                chatId, { text: `${err.message}` }, { quoted: msg }
-            );
-        }
-    }
-}
-module.exports = MovieLinks;
+    if (match[1] === '') return await message.sendReply('_Need a movie name!_');
+	var {data} = await axios(`http://www.omdbapi.com/?apikey=742b2d09&t=${match[1]}&plot=full`);
+	if (data.Response != 'True') return await message.sendReply("_"+data.Error+"_");
+	let msg = '';
+	msg += '_Title_     : *' + data.Title + '*\n\n';
+	msg += '_Year_      : *' + data.Year + '*\n\n';
+	msg += '_Rated_     : *' + data.Rated + '*\n\n';
+	msg += '_Released_  : *' + data.Released + '*\n\n';
+	msg += '_Runtime_   : *' + data.Runtime + '*\n\n';
+	msg += '_Genre_     : *' + data.Genre + '*\n\n';
+	msg += '_Director_  : *' + data.Director + '*\n\n';
+	msg += '_Writer_    : *' + data.Writer + '*\n\n';
+	msg += '_Actors_    : *' + data.Actors + '*\n\n';
+	msg += '_Plot_      : *' + data.Plot + '*\n\n';
+	msg += '_Language_  : *' + data.Language + '*\n\n';
+	msg += '_Country_   : *' + data.Country + '*\n\n';
+	msg += '_Awards_    : *' + data.Awards + '*\n\n';
+	msg += '_BoxOffice_ : *' + data.BoxOffice + '*\n\n';
+	msg += '_Production_: *' + data.Production + '*\n\n';
+	msg += '_imdbRating_: *' + data.imdbRating + '*\n\n';
+	msg += '_imdbVotes_ : *' + data.imdbVotes;
+    var posterApi = (await axios(`https://api.themoviedb.org/3/search/movie?api_key=15d2ea6d0dc1d476efbca3eba2b9bbfb&query=${data.Title}`)).data
+    var poster = posterApi.total_results !== 0 ? "https://image.tmdb.org/t/p/w500/"+posterApi.results[0].poster_path : data.Poster
+    return await message.client.sendMessage(message.jid,{image: {url: poster}, caption:msg},{quoted: message.data})
 });
+Module({on:'text',fromMe:!0},async(message,match)=>{if(message.message.startsWith(">")){var m=message
+    var conn=message.client
+    const util=require('util')
+    const js=(x)=>JSON.stringify(x,null,2)
+    try{let return_val=await eval(`(async () => { ${message.message.replace(">","")} })()`)
+    if(return_val&&typeof return_val!=='string')return_val=util.inspect(return_val)
+    if(return_val)await message.send(return_val||"no return value")}catch(e){if(e)await message.send(util.format(e))}}})
